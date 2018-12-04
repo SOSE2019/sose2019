@@ -1,0 +1,55 @@
+import datatypes from "../data/teamA.data" as domain
+import microservices from "teamA.services" as teamA
+import microservices from "teamC.services" as teamC
+
+/*
+ * Import of a technology model, which defines service-related technology. Please note that this is
+ * part of our current work in implementing technology models to separate the service functionality
+ * from the service technology concern and make technology definitions reusable across microservices
+ * and operation nodes. The imported model is assigned to Microservice instances with the
+ * "@technology" annotation.
+ */
+import technology from "service.technology" as serviceTechnology
+
+/* Allocations over time */
+@technology(serviceTechnology)
+@sync(serviceTechnology::_protocols.rest)
+public functional microservice com.example.AllocationsOverTime {
+	required microservices {
+		teamA::com.example.ParkingSpaceMgmt
+	}
+
+	@endpoints(serviceTechnology::_protocols.rest: "/aot";)
+	interface AllocationsOverTime {
+		getAllocations(
+			sync parkingSpaceId : long,
+			sync in beginTimestamp : date,
+			sync in endTimestamp : date,
+			sync out allocations : domain::ParkingSpace.VehicleCounts
+		);
+	}
+}
+
+/* Current allocation */
+@technology(serviceTechnology)
+@sync(serviceTechnology::_protocols.rest)
+@async(serviceTechnology::_protocols.amqp)
+public functional microservice com.example.CurrentAllocation {
+	required microservices {
+		AllocationsOverTime,
+		teamC::com.example.SearchForFreeSpace
+	}
+
+	@endpoints(serviceTechnology::_protocols.rest: "/ca";)
+	interface CurrentAllocation {
+		getCurrentAllocation(
+			sync in parkingSpaceId : long,
+			sync out classAllocations : domain::ParkingSpace.VehicleCounts
+		);
+
+		updateAllocations(
+			async in parkingSpaceId : long,
+			async in updatedAllocations : domain::ParkingSpace.VehicleCounts
+		);
+	}
+}

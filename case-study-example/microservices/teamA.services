@@ -1,0 +1,50 @@
+import datatypes from "../data/teamA.data" as domain
+
+/*
+ * Import of a technology model, which defines service-related technology. Please note that this is
+ * part of our current work in implementing technology models to separate the service functionality
+ * from the service technology concern and make technology definitions reusable across microservices
+ * and operation nodes. The imported model is assigned to Microservice instances with the
+ * "@technology" annotation.
+ */
+import technology from "service.technology" as serviceTechnology
+
+/* Parking space management */
+@technology(serviceTechnology)
+@sync(serviceTechnology::_protocols.rest)
+@async(serviceTechnology::_protocols.amqp)
+functional microservice com.example.ParkingSpaceMgmt {
+	@endpoints(serviceTechnology::_protocols.rest: "/psm";)
+	public interface ParkingSpaceInformation {
+		getInformation(
+			sync in id : long,
+			sync out info : domain::ParkingSpace.ParkingSpace
+		);
+
+		propagateInformationChanges(
+			async out changedParkingSpaceInfo : domain::ParkingSpace.ParkingSpace,
+			async out changedAllocations : domain::ParkingSpace.VehicleCounts
+		);
+	}
+
+	@endpoints(serviceTechnology::_protocols.rest: "/psm/manage";)
+	public interface ParkingSpaceMgmt {
+		createParkingSpace(
+			sync in newSpace : domain::ParkingSpace.ParkingSpace,
+			sync out id : long
+		);
+
+		updateParkingSpace(
+			sync in space : domain::ParkingSpace.ParkingSpace
+		);
+
+		deleteParkingSpace(
+			sync in id : long
+		);
+
+		resetCounters(
+			sync in parkingSpaceId : long,
+			sync in vehicleClass : string
+		);
+	}
+}

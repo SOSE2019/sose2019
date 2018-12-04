@@ -1,0 +1,35 @@
+import microservices from "../microservices/teamB.services" as teamB
+
+/*
+ * Import of a technology model, which defines operation technology. Please note that this is part
+ * of our current work in implementing technology models to separate the service functionality from
+ * the service technology concern and make technology definitions reusable across microservices and
+ * operation nodes. The imported model is assigned to Container instances with the "@technology"
+ * annotation.
+ */
+import technology from "operation.technology" as operationTechnology
+
+/* Allocations over time */
+@technology(operationTechnology)
+container AllocationsOverTime deployment technology operationTechnology::_deployment.docker
+with operation environment "python"
+deploys teamB::com.example.AllocationsOverTime {
+	default values {
+		basic endpoints {
+			operationTechnology::_protocols.rest: "http://example.com:8080";
+		}
+	}
+}
+
+/* Current allocation */
+@technology(operationTechnology)
+container CurrentAllocation deployment technology operationTechnology::_deployment.docker
+with operation environment "python"
+deploys teamB::com.example.CurrentAllocation {
+	default values {
+		basic endpoints {
+			operationTechnology::_protocols.amqp: "amqp://example.com:5672";
+			operationTechnology::_protocols.rest: "http://example.com:8080";
+		}
+	}
+}

@@ -1,0 +1,22 @@
+technology ^operation {
+	protocols {
+		sync rest data formats json default with format json;
+		async amqp data formats json default with format json;
+	}
+
+	deployment technologies {
+		docker {
+			operation environments = "openjdk" default, "python";
+		}
+	}
+
+	infrastructure technologies {
+		serviceDiscovery {
+			operation environments = "spring-cloud-netflix-eureka" default;
+		}
+
+		apiGateway {
+			operation environments = "spring-cloud-netflix-zuul" default;
+		}
+	}
+}

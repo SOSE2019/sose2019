@@ -1,0 +1,21 @@
+import microservices from "../microservices/teamC.services" as teamC
+
+/*
+ * Import of a technology model, which defines operation technology. Please note that this is part
+ * of our current work in implementing technology models to separate the service functionality from
+ * the service technology concern and make technology definitions reusable across microservices and
+ * operation nodes. The imported model is assigned to Container instances with the "@technology"
+ * annotation.
+ */
+import technology from "operation.technology" as operationTechnology
+
+/* Search for free space */
+@technology(operationTechnology)
+container SearchForFreeSpace deployment technology operationTechnology::_deployment.docker
+deploys teamC::com.example.SearchForFreeSpace {
+	default values {
+		basic endpoints {
+			operationTechnology::_protocols.rest: "http://example.com:8080";
+		}
+	}
+}

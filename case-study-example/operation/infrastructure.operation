@@ -1,0 +1,31 @@
+import microservices from "../microservices/teamA.services" as teamA
+import microservices from "../microservices/teamB.services" as teamB
+import microservices from "../microservices/teamC.services" as teamC
+
+/*
+ * Import of a technology model, which defines infrastructure technology. Please note that this is
+ * part of our current work in implementing technology models to separate the service functionality
+ * from the service technology concern and make technology definitions reusable across microservices
+ * and operation nodes. The imported model is assigned to InfrastructureNode instances with the
+ * "@technology" annotation.
+ */
+import technology from "operation.technology" as infrastructureTechnology
+
+/* Infrastructure nodes */
+// Service discovery
+@technology(infrastructureTechnology)
+ServiceDiscovery is infrastructureTechnology::_infrastructure.serviceDiscovery
+used by
+	teamB::com.example.CurrentAllocation,
+	teamC::com.example.SearchForFreeSpace,
+	teamB::com.example.AllocationsOverTime,
+	teamA::com.example.ParkingSpaceMgmt {}
+
+// API Gateway
+@technology(infrastructureTechnology)
+ApiGateway is infrastructureTechnology::_infrastructure.apiGateway
+used by
+	teamB::com.example.CurrentAllocation,
+	teamC::com.example.SearchForFreeSpace,
+	teamB::com.example.AllocationsOverTime,
+	teamA::com.example.ParkingSpaceMgmt {}

@@ -1,0 +1,33 @@
+import datatypes from "../data/teamA.data" as domain
+import microservices from "teamA.services" as teamA
+import microservices from "teamB.services" as teamB
+
+/*
+ * Import of a technology model, which defines service-related technology. Please note that this is
+ * part of our current work in implementing technology models to separate the service functionality
+ * from the service technology concern and make technology definitions reusable across microservices
+ * and operation nodes. The imported model is assigned to Microservice instances with the
+ * "@technology" annotation.
+ */
+import technology from "service.technology" as serviceTechnology
+
+/* Search for free space */
+@technology(serviceTechnology)
+@sync(serviceTechnology::_protocols.rest)
+public functional microservice com.example.SearchForFreeSpace {
+	required microservices {
+		teamA::com.example.ParkingSpaceMgmt,
+		teamB::com.example.CurrentAllocation
+	}
+
+	@endpoints(serviceTechnology::_protocols.rest: "/sfs";)
+	interface SearchSpace {
+		getFreeSpace(
+			sync in inLocation : domain::ParkingSpace.Location,
+			sync in distance : float,
+			sync out freeSpaces : domain::ParkingSpace.ParkingSpaces,
+			sync out allocations : domain::ParkingSpace.VehicleCounts,
+			sync out fault foundNone : boolean
+		);
+	}
+}

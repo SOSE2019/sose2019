@@ -1,0 +1,6 @@
+technology ^service {
+	protocols {
+		sync rest data formats json default with format json;
+		async amqp data formats json default with format json;
+	}
+}
