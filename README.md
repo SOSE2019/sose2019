@@ -1,4 +1,4 @@
-# Modeling Languages for Viewpoint-specific model-driven microservice development
+# Modeling Languages for Viewpoint-specific Model-driven Microservice Development
 
 This repository contains the implemented modeling languages being described in our paper entitled "Viewpoint-specific Model-driven Microservice Development with Interlinked Modeling Languages", which has been submitted to the [13th IEEE International Conference on Service-Oriented System Engineering (SOSE)](http://www.ieeesose.net).
 
